@@ -38,11 +38,7 @@ export default function Header() {
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
   return (
-    // <div className="absolute top-0 z-10 flex h-20 w-full items-center justify-between p-2 font-semibold text-text-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 2xl:bg-transparent 2xl:backdrop-blur-none 2xl:dark:bg-transparent">
-    <div className="absolute top-0 z-10 flex h-20 w-full items-center justify-between 
-      bg-gradient-to-b from-white/95 via-white/70 to-transparent 
-      p-2 font-semibold text-text-primary 
-      dark:from-gray-800/100 dark:via-gray-800/60 xl:dark:via-gray-800/20 2xl:dark:from-gray-800/0 2xl:dark:via-gray-800/0">
+    <div className="absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-gradient-to-b from-white/100 via-white/70 to-transparent p-2 font-semibold text-text-primary dark:from-gray-800/100 dark:via-gray-800/70 xl:via-white/50 xl:dark:via-gray-800/50 2xl:from-white/0 2xl:via-white/0 2xl:dark:from-gray-800/0 2xl:dark:via-gray-800/0">
       <div className="hide-scrollbar flex w-full items-center justify-between gap-2 overflow-x-auto">
         <div className="mx-1 flex items-center">
           <AnimatePresence initial={false}>

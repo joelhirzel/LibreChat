@@ -104,7 +104,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                 </div>
               ) : (
                 <>
-                  <div className="flex-1 overflow-y-auto pt-20">
+                  <div className="flex-1 overflow-y-auto pt-14">
                     {content}
                   </div>
                   <div className="w-full">
