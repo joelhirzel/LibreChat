@@ -92,32 +92,28 @@ function ChatView({ index = 0 }: { index?: number }) {
       <ChatContext.Provider value={chatHelpers}>
         <AddedChatContext.Provider value={addedChatHelpers}>
           <Presentation>
-            <div className="flex h-full w-full flex-col">
+            <div className="relative flex h-full w-full flex-col">
               {!isLoading && <Header />}
-              <>
-                <div
-                  className={cn(
-                    'flex flex-col',
-                    isLandingPage
-                      ? 'flex-1 items-center justify-end sm:justify-center'
-                      : 'h-full overflow-y-auto',
-                  )}
-                >
-                  <div className={cn(!isLandingPage && 'pt-20')}>
-                    {content}
-                  </div>
-                  <div
-                    className={cn(
-                      'w-full',
-                      isLandingPage && 'max-w-3xl transition-all duration-200 xl:max-w-4xl',
-                    )}
-                  >
+              {isLandingPage ? (
+                <div className="flex flex-1 flex-col items-center justify-end sm:justify-center">
+                  {content}
+                  <div className="w-full max-w-3xl transition-all duration-200 xl:max-w-4xl">
                     <ChatForm index={index} />
-                    {isLandingPage ? <ConversationStarters /> : <Footer />}
+                    <ConversationStarters />
                   </div>
                 </div>
-                {isLandingPage && <Footer />}
-              </>
+              ) : (
+                <>
+                  <div className="flex-1 overflow-y-auto pt-20">
+                    {content}
+                  </div>
+                  <div className="w-full">
+                    <ChatForm index={index} />
+                    <Footer />
+                  </div>
+                </>
+              )}
+              {isLandingPage && <Footer />}
             </div>
           </Presentation>
         </AddedChatContext.Provider>
