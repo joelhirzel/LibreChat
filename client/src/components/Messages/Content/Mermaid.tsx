@@ -56,20 +56,16 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
   const zoomCopyButtonRef = useRef<HTMLButtonElement>(null);
   const dialogZoomCopyButtonRef = useRef<HTMLButtonElement>(null);
 
-  // SVG dimensions for proper scaling
   const [svgDimensions, setSvgDimensions] = useState<{ width: number; height: number } | null>(null);
   const [containerWidth, setContainerWidth] = useState(700);
   const [isHovered, setIsHovered] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  // Detect touch device on mount
   useEffect(() => {
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
   }, []);
 
-  // Zoom and pan state
   const [zoom, setZoom] = useState(1);
-  // Dialog zoom and pan state (separate from inline view)
   const [dialogZoom, setDialogZoom] = useState(1);
   const [dialogPan, setDialogPan] = useState({ x: 0, y: 0 });
   const [isDialogPanning, setIsDialogPanning] = useState(false);
@@ -88,21 +84,18 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
     key: retryCount,
   });
 
-  // Auto-scroll streaming code to bottom
   useEffect(() => {
     if (isLoading && streamingCodeRef.current) {
       streamingCodeRef.current.scrollTop = streamingCodeRef.current.scrollHeight;
     }
   }, [children, isLoading]);
 
-  // Store last valid SVG for showing during updates
   useEffect(() => {
     if (svg) {
       lastValidSvgRef.current = svg;
     }
   }, [svg]);
 
-  // Track container width for proper scaling
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -116,13 +109,11 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
     return () => observer.disconnect();
   }, []);
 
-  // Process SVG and create blob URL
   const processedSvg = useMemo(() => {
     if (!svg) {
       return null;
     }
 
-    // Extract dimensions from SVG
     const parser = new DOMParser();
     const doc = parser.parseFromString(svg, 'image/svg+xml');
     const svgElement = doc.querySelector('svg');
@@ -131,7 +122,6 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
       let width = parseFloat(svgElement.getAttribute('width') || '0');
       let height = parseFloat(svgElement.getAttribute('height') || '0');
 
-      // Try viewBox if width/height not available
       if (!width || !height) {
         const viewBox = svgElement.getAttribute('viewBox');
         if (viewBox) {
@@ -146,7 +136,6 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
       if (width && height) {
         setSvgDimensions({ width, height });
 
-        // Ensure viewBox is set for proper scaling
         if (!svgElement.getAttribute('viewBox')) {
           svgElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
         }
@@ -158,7 +147,6 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
         svgElement.removeAttribute('style');
       }
 
-      // Ensure SVG has proper XML namespace
       if (!svgElement.getAttribute('xmlns')) {
         svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       }
@@ -181,7 +169,6 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
       }
     }
 
-    // Ensure SVG has proper XML namespace
     if (!finalSvg.includes('xmlns')) {
       finalSvg = finalSvg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
     }
@@ -189,7 +176,6 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
     return finalSvg;
   }, [svg]);
 
-  // Create blob URL for the SVG
   useEffect(() => {
     if (!processedSvg) {
       return;
@@ -212,7 +198,7 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
       return { initialScale: 1, calculatedHeight: MAX_CONTAINER_HEIGHT };
     }
 
-    const padding = 32; // Account for container padding
+    const padding = 32;
     const availableWidth = containerWidth - padding;
     const scaleX = availableWidth / svgDimensions.width;
     const scaleY = MAX_CONTAINER_HEIGHT / svgDimensions.height;
@@ -425,10 +411,8 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
     };
   }, [isPanning]);
 
-  // Whether to show controls (on hover, touch device, or when code is shown)
   const showControls = isHovered || isTouchDevice || showCode;
 
-  // Shared style constants
   const headerBase =
     'absolute left-0 right-0 top-0 z-20 flex items-center justify-between rounded-tl-md rounded-tr-md bg-gray-700/80 px-4 py-2 font-sans text-xs text-gray-200 backdrop-blur-sm transition-opacity duration-200';
 
@@ -487,7 +471,6 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
     [localize, showCode, isCopied, handleToggleCode, handleCopy],
   );
 
-  // Zoom controls - inline JSX to avoid stale closure issues
   const zoomControls = (
     <div
       className={cn(
@@ -551,7 +534,6 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
     </div>
   );
 
-  // Dialog zoom controls
   const dialogZoomControls = (
     <div className="absolute bottom-4 right-4 z-10 flex items-center gap-1 rounded-md border border-border-light bg-surface-secondary p-1 shadow-lg">
       <button
