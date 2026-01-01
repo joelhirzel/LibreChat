@@ -60,6 +60,7 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
   const [containerWidth, setContainerWidth] = useState(700);
   const [isHovered, setIsHovered] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [showMobileControls, setShowMobileControls] = useState(false);
 
   useEffect(() => {
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
@@ -411,7 +412,20 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
     };
   }, [isPanning]);
 
-  const showControls = isHovered || isTouchDevice || showCode;
+  // On mobile: tap to toggle controls; on desktop: show on hover
+  const showControls = isTouchDevice ? showMobileControls || showCode : isHovered || showCode;
+
+  const handleContainerClick = useCallback(
+    (e: React.MouseEvent | React.TouchEvent) => {
+      if (!isTouchDevice) return;
+      const target = e.target as HTMLElement;
+      const isInteractive = target.closest('button, a, [role="button"]');
+      if (!isInteractive) {
+        setShowMobileControls((prev) => !prev);
+      }
+    },
+    [isTouchDevice],
+  );
 
   const headerBase =
     'absolute left-0 right-0 top-0 z-20 flex items-center justify-between rounded-tl-md rounded-tr-md bg-gray-700/80 px-4 py-2 font-sans text-xs text-gray-200 backdrop-blur-sm transition-opacity duration-200';
@@ -688,6 +702,7 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
           )}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          onClick={handleContainerClick}
         >
           <div
             className={cn(
@@ -814,6 +829,7 @@ const Mermaid: React.FC<MermaidProps> = memo(({ children, id, theme }) => {
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleContainerClick}
       >
         <div
           className={cn(
